@@ -1,0 +1,622 @@
+<!-- NAVEGACIÓN -->
+<header class="sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-3" href="#inicio">
+        AUTO<span class="text-danger">MAX</span>
+      </a>
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#menuPrincipal"
+        aria-controls="menuPrincipal"
+        aria-expanded="false"
+        aria-label="Abrir navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link" href="#inicio">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#catalogo">Vehículos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#promociones">Promociones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#nosotros">Nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#resenas">Reseñas</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-danger ms-lg-2" href="#registro">
+              Registrar vehículo
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- INICIO -->
+  <section id="inicio" class="hero">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <p class="etiqueta">AUTOMAX · HUANCAYO</p>
+
+          <h1 class="display-3 fw-bold">
+            Tu próximo camino
+            <span class="text-danger">empieza aquí.</span>
+          </h1>
+
+          <p class="lead text-white-50 my-4">
+            Encuentra el vehículo que va contigo.
+            Explora sedanes, SUV, camionetas y deportivos
+            en un solo lugar.
+          </p>
+
+          <div class="d-flex flex-wrap gap-3">
+            <a href="#catalogo" class="btn btn-danger btn-lg">
+              Explorar vehículos
+            </a>
+
+            <a href="#nosotros" class="btn btn-outline-light btn-lg">
+              Conoce AutoMax
+            </a>
+          </div>
+
+          <div class="d-flex gap-5 mt-5">
+            <div>
+              <strong class="fs-3 d-block">
+                {{ listaVehiculos.length }}
+              </strong>
+              <span class="text-white-50">Vehículos en catálogo</span>
+            </div>
+
+            <div>
+              <strong class="fs-3 d-block">4</strong>
+              <span class="text-white-50">Categorías</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <img
+            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85"
+            alt="Vehículo deportivo en carretera"
+            class="imagen-hero">
+
+          <p class="small text-white-50 mt-2 mb-0">
+            Imagen referencial.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATÁLOGO -->
+  <section id="catalogo" class="seccion">
+    <div class="container">
+      <div class="row align-items-end mb-4 g-3">
+        <div class="col-lg-8">
+          <p class="etiqueta text-danger">ENCUENTRA TU FAVORITO</p>
+          <h2 class="fw-bold display-6">Nuestro catálogo</h2>
+          <p class="text-secondary mb-0">
+            Compara precios y descubre las características
+            de cada vehículo.
+          </p>
+        </div>
+
+        <div class="col-lg-4 text-lg-end">
+          <span class="badge text-bg-dark p-3">
+            {{ listaVehiculos.length }} vehículos registrados
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="d-flex flex-wrap gap-2 mb-4"
+        role="group"
+        aria-label="Filtrar vehículos por categoría">
+
+        <button
+          type="button"
+          class="btn"
+          [class.btn-danger]="categoriaSeleccionada() === 'Todos'"
+          [class.btn-outline-dark]="categoriaSeleccionada() !== 'Todos'"
+          [attr.aria-pressed]="categoriaSeleccionada() === 'Todos'"
+          (click)="filtrarCategoria('Todos')">
+          Todos
+        </button>
+
+        @for (categoria of categorias; track $index) {
+          <button
+            type="button"
+            class="btn"
+            [class.btn-danger]="categoriaSeleccionada() === categoria"
+            [class.btn-outline-dark]="categoriaSeleccionada() !== categoria"
+            [attr.aria-pressed]="categoriaSeleccionada() === categoria"
+            (click)="filtrarCategoria(categoria)">
+            {{ categoria }}
+          </button>
+        }
+      </div>
+
+      <div class="row g-4">
+        @for (vehiculo of listaVehiculos; track $index) {
+          @if (
+            categoriaSeleccionada() === 'Todos' ||
+            categoriaSeleccionada() === vehiculo.categoria
+          ) {
+            <div class="col-md-6 col-xl-3">
+              <article class="card tarjeta-vehiculo h-100">
+                <img
+                  [src]="vehiculo.imagen"
+                  [alt]="vehiculo.nombre"
+                  class="card-img-top imagen-vehiculo"
+                  loading="lazy">
+
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between mb-3">
+                    <span class="badge text-bg-light">
+                      {{ vehiculo.categoria }}
+                    </span>
+                    <span class="small text-secondary">
+                      {{ vehiculo.anio }}
+                    </span>
+                  </div>
+
+                  <h3 class="h5 fw-bold">{{ vehiculo.nombre }}</h3>
+
+                  <p class="text-secondary small">
+                    {{ vehiculo.marca }} · {{ vehiculo.modelo }}
+                  </p>
+
+                  <p class="descripcion-vehiculo small text-secondary">
+                    {{ vehiculo.descripcion }}
+                  </p>
+
+                  <p class="fs-4 fw-bold text-danger mt-auto">
+                    {{ vehiculo.precio | currency:'PEN':'S/ ':'1.2-2' }}
+                  </p>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline-dark w-100"
+                    (click)="verDetalles(vehiculo)">
+                    Ver características
+                  </button>
+                </div>
+              </article>
+            </div>
+          }
+        }
+      </div>
+
+      <p class="small text-secondary mt-4 mb-0">
+        Catálogo de demostración: nombres, precios y características
+        de ejemplo. Fotografías referenciales.
+      </p>
+    </div>
+  </section>
+
+  <!-- PROMOCIONES -->
+  <section id="promociones" class="seccion bg-light">
+    <div class="container">
+      <div class="promocion p-4 p-lg-5">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-8">
+            <span class="badge text-bg-light mb-3">
+              PROMOCIÓN DE EJEMPLO
+            </span>
+
+            <h2 class="fw-bold display-6">
+              Estrena auto y empieza con todo.
+            </h2>
+
+            <p class="fs-5 mb-2">
+              Un mantenimiento básico de cortesía
+              en vehículos seleccionados.
+            </p>
+
+            <p class="small mb-0">
+              Beneficio simulado para la presentación académica.
+              Consulta las condiciones de demostración.
+            </p>
+          </div>
+
+          <div class="col-lg-4 text-lg-end">
+            <button
+              type="button"
+              class="btn btn-light btn-lg"
+              (click)="consultarPromocion()">
+              Consultar promoción
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOSOTROS -->
+  <section id="nosotros" class="seccion">
+    <div class="container">
+      <div class="text-center mb-5">
+        <p class="etiqueta text-danger">CONOCE AUTOMAX</p>
+        <h2 class="fw-bold display-6">Más cerca de tu próximo vehículo</h2>
+        <p class="text-secondary">
+          Propuesta institucional de una tienda ficticia en Huancayo.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <article class="tarjeta-info h-100">
+            <span class="numero-seccion">01</span>
+            <h3 class="h4 fw-bold">Nuestra historia</h3>
+            <p class="text-secondary mb-0">
+              AutoMax nace como una propuesta para facilitar
+              la búsqueda de vehículos en Huancayo, reuniendo
+              información clara y organizada en una página web.
+            </p>
+          </article>
+        </div>
+
+        <div class="col-md-4">
+          <article class="tarjeta-info h-100">
+            <span class="numero-seccion">02</span>
+            <h3 class="h4 fw-bold">Misión</h3>
+            <p class="text-secondary mb-0">
+              Ayudar a nuestros clientes a encontrar un vehículo
+              de acuerdo con sus necesidades, brindando información
+              comprensible y una atención cercana.
+            </p>
+          </article>
+        </div>
+
+        <div class="col-md-4">
+          <article class="tarjeta-info h-100">
+            <span class="numero-seccion">03</span>
+            <h3 class="h4 fw-bold">Visión</h3>
+            <p class="text-secondary mb-0">
+              Ser una tienda reconocida en Huancayo por la confianza,
+              la variedad de vehículos y la facilidad de su
+              experiencia digital.
+            </p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEÑAS -->
+  <section id="resenas" class="seccion bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <p class="etiqueta text-danger">EXPERIENCIAS</p>
+        <h2 class="fw-bold display-6">Opiniones de clientes</h2>
+        <p class="text-secondary">
+          Reseñas ficticias utilizadas para demostrar el diseño.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <article class="card border-0 shadow-sm h-100 p-4">
+            <p class="estrellas" aria-label="5 de 5 estrellas">
+              ★★★★★
+            </p>
+            <blockquote class="text-secondary">
+              “La página me permitió comparar las categorías
+              y revisar los precios de forma sencilla”.
+            </blockquote>
+            <p class="fw-bold mt-auto mb-0">María · Cliente de ejemplo</p>
+          </article>
+        </div>
+
+        <div class="col-md-4">
+          <article class="card border-0 shadow-sm h-100 p-4">
+            <p class="estrellas" aria-label="5 de 5 estrellas">
+              ★★★★★
+            </p>
+            <blockquote class="text-secondary">
+              “Encontré las características que necesitaba
+              para elegir una camioneta para mi trabajo”.
+            </blockquote>
+            <p class="fw-bold mt-auto mb-0">Carlos · Cliente de ejemplo</p>
+          </article>
+        </div>
+
+        <div class="col-md-4">
+          <article class="card border-0 shadow-sm h-100 p-4">
+            <p class="estrellas" aria-label="4 de 5 estrellas">
+              ★★★★☆
+            </p>
+            <blockquote class="text-secondary">
+              “Me gustó poder revisar el catálogo desde
+              mi celular y conocer las promociones”.
+            </blockquote>
+            <p class="fw-bold mt-auto mb-0">Lucía · Cliente de ejemplo</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULARIO -->
+  <section id="registro" class="seccion">
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-4">
+          <p class="etiqueta text-danger">GESTIÓN DEL CATÁLOGO</p>
+          <h2 class="fw-bold display-6">Registra un vehículo</h2>
+
+          <p class="text-secondary">
+            Completa los datos para agregar un nuevo vehículo
+            al catálogo y a la tabla de registros.
+          </p>
+
+          <div class="alert alert-light border">
+            Todos los campos son obligatorios.
+            Utiliza un enlace directo a una imagen.
+          </div>
+
+          <p class="small text-secondary">
+            Demostración sin inicio de sesión. Los nuevos registros
+            permanecen mientras no recargues la página.
+          </p>
+        </div>
+
+        <div class="col-lg-8">
+          <form
+            class="row g-3 formulario p-3 p-md-4"
+            (submit)="guardarVehiculo($event)"
+            novalidate>
+
+            <div class="col-md-6">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input
+                type="text"
+                id="nombre"
+                class="form-control"
+                placeholder="Ejemplo: Toyota Corolla"
+                [formField]="vehiculoFormulario.nombre">
+
+              @if (
+                vehiculoFormulario.nombre().touched() &&
+                vehiculoFormulario.nombre().invalid()
+              ) {
+                @for (e of vehiculoFormulario.nombre().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label for="marca" class="form-label">Marca</label>
+              <input
+                type="text"
+                id="marca"
+                class="form-control"
+                placeholder="Ejemplo: Toyota"
+                [formField]="vehiculoFormulario.marca">
+
+              @if (
+                vehiculoFormulario.marca().touched() &&
+                vehiculoFormulario.marca().invalid()
+              ) {
+                @for (e of vehiculoFormulario.marca().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label for="modelo" class="form-label">Modelo</label>
+              <input
+                type="text"
+                id="modelo"
+                class="form-control"
+                placeholder="Ejemplo: Corolla"
+                [formField]="vehiculoFormulario.modelo">
+
+              @if (
+                vehiculoFormulario.modelo().touched() &&
+                vehiculoFormulario.modelo().invalid()
+              ) {
+                @for (e of vehiculoFormulario.modelo().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label for="categoria" class="form-label">Categoría</label>
+              <select
+                id="categoria"
+                class="form-select"
+                [formField]="vehiculoFormulario.categoria">
+                <option value="">Selecciona una categoría</option>
+
+                @for (categoria of categorias; track $index) {
+                  <option [value]="categoria">{{ categoria }}</option>
+                }
+              </select>
+
+              @if (
+                vehiculoFormulario.categoria().touched() &&
+                vehiculoFormulario.categoria().invalid()
+              ) {
+                @for (e of vehiculoFormulario.categoria().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label for="precio" class="form-label">Precio en soles</label>
+              <input
+                type="number"
+                id="precio"
+                class="form-control"
+                step="0.01"
+                [formField]="vehiculoFormulario.precio">
+
+              @if (
+                vehiculoFormulario.precio().touched() &&
+                vehiculoFormulario.precio().invalid()
+              ) {
+                @for (e of vehiculoFormulario.precio().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label for="anio" class="form-label">Año</label>
+              <input
+                type="number"
+                id="anio"
+                class="form-control"
+                step="1"
+                [formField]="vehiculoFormulario.anio">
+
+              @if (
+                vehiculoFormulario.anio().touched() &&
+                vehiculoFormulario.anio().invalid()
+              ) {
+                @for (e of vehiculoFormulario.anio().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-12">
+              <label for="imagen" class="form-label">Enlace de la imagen</label>
+              <input
+                type="text"
+                id="imagen"
+                class="form-control"
+                placeholder="https://sitio.com/vehiculo.jpg"
+                [formField]="vehiculoFormulario.imagen">
+
+              @if (
+                vehiculoFormulario.imagen().touched() &&
+                vehiculoFormulario.imagen().invalid()
+              ) {
+                @for (e of vehiculoFormulario.imagen().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-12">
+              <label for="descripcion" class="form-label">
+                Características del vehículo
+              </label>
+              <textarea
+                id="descripcion"
+                class="form-control"
+                rows="4"
+                placeholder="Describe el motor, transmisión, asientos y equipamiento."
+                [formField]="vehiculoFormulario.descripcion"></textarea>
+
+              @if (
+                vehiculoFormulario.descripcion().touched() &&
+                vehiculoFormulario.descripcion().invalid()
+              ) {
+                @for (e of vehiculoFormulario.descripcion().errors(); track $index) {
+                  <span class="text-danger small d-block">{{ e.message }}</span>
+                }
+              }
+            </div>
+
+            <div class="col-12 d-flex flex-wrap gap-2 mt-4">
+              <button
+                class="btn btn-danger px-4"
+                type="submit"
+                [disabled]="vehiculoFormulario().invalid()">
+                Guardar vehículo
+              </button>
+
+              <button
+                class="btn btn-outline-secondary px-4"
+                type="button"
+                (click)="limpiar()">
+                Limpiar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TABLA DE REGISTROS -->
+      <div class="mt-5">
+        <h3 class="h4 fw-bold mb-3">Vehículos registrados</h3>
+
+        <div class="table-responsive tabla-registros">
+          <table class="table table-hover align-middle mb-0">
+            <caption class="px-3">
+              Registros disponibles en la sesión actual.
+            </caption>
+
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Año</th>
+                <th scope="col">Categoría</th>
+                <th scope="col">Precio</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (vehiculo of listaVehiculos; track $index) {
+                <tr>
+                  <td>{{ vehiculo.nombre }}</td>
+                  <td>{{ vehiculo.marca }}</td>
+                  <td>{{ vehiculo.modelo }}</td>
+                  <td>{{ vehiculo.anio }}</td>
+                  <td>{{ vehiculo.categoria }}</td>
+                  <td class="text-nowrap">
+                    {{ vehiculo.precio | currency:'PEN':'S/ ':'1.2-2' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-dark text-white py-4">
+  <div class="container d-flex flex-wrap justify-content-between gap-3">
+    <div>
+      <p class="fw-bold fs-4 mb-1">
+        AUTO<span class="text-danger">MAX</span>
+      </p>
+      <p class="text-white-50 small mb-0">
+        Huancayo, Junín · Proyecto académico
+      </p>
+    </div>
+
+    <div class="text-lg-end">
+      <p class="small text-white-50 mb-2">
+        Desarrollo de Aplicaciones Web · 2026
+      </p>
+      <a href="#inicio" class="text-white">Volver al inicio</a>
+    </div>
+  </div>
+</footer>
